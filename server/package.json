@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "seed": "node src/utils/seedDatabase.js",
+    "seed:users": "node src/scripts/seedUsers.js",
+    "sql:create": "node src/scripts/createSQLTables.js",
+    "sql:migrate": "node src/scripts/migrateMongoToSQL.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.0",
+    "mssql": "^12.2.0",
+    "nodemon": "^3.1.11",
+    "sequelize": "^6.37.7",
+    "tedious": "^19.2.0",
+    "winston": "^3.18.3",
+    "xlsx": "^0.18.5",
+    "yup": "^1.7.1"
+  }
+}
