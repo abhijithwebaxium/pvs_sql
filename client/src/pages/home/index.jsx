@@ -37,7 +37,7 @@ const Home = () => {
         </Card>
       );
     }
-console.log('Rendering dashboard for role:', user.role);
+
     switch (user.role) {
       case "admin":
         return <AdminDashboard user={user} />;

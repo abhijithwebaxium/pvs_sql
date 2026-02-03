@@ -24,8 +24,8 @@ const useDashboardStats = () => {
 
         // Fetch employees and branches in parallel
         const [employeesResponse, branchesResponse] = await Promise.all([
-          api.get("/api/v2/employees"),
-          api.get("/api/v2/branches"),
+          api.get("/v2/employees"),
+          api.get("/v2/branches"),
         ]);
 
         setStats({

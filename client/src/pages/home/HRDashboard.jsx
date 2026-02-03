@@ -50,14 +50,10 @@ const HRDashboard = ({ user }) => {
       setLoading(true);
       setError("");
       try {
-        console.log('going to fetch employees 1');
-
         const response = await api.get("/v2/employees");
-        console.log('employees fetched 1');
         setEmployees(response.data.data);
         setFilteredEmployees(response.data.data);
       } catch (err) {
-        console.log(err, 'error occurred while fetching employees 1');
         setError(
           err.response?.data?.message ||
             err.message ||
@@ -130,15 +126,10 @@ const HRDashboard = ({ user }) => {
       setLoading(true);
       setError("");
       try {
-        console.log('going to fetch employees');
-
         const response = await api.get("/v2/employees");
-        console.log('employees fetched');
         setEmployees(response.data.data);
         setFilteredEmployees(response.data.data);
       } catch (err) {
-        console.log(err, 'error occurred while fetching employees');
-
         setError(
           err.response?.data?.message ||
             err.message ||
@@ -473,7 +464,7 @@ const HRDashboard = ({ user }) => {
     return (
       <Box sx={{ mb: 4 }}>
         <Alert severity="error">
-          Failed to load dashboard data hello: {statsError || error}
+          Failed to load dashboard data: {statsError || error}
         </Alert>
       </Box>
     );
