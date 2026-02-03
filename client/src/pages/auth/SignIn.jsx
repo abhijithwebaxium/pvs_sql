@@ -135,7 +135,7 @@ const SignIn = () => {
             variant="h2"
             sx={{ fontWeight: 800, mb: 2, letterSpacing: -1 }}
           >
-            PVS Chemicals
+            PVS Chemic
           </Typography>
           <Typography
             variant="h5"
