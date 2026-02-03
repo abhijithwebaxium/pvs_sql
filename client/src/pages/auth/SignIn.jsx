@@ -54,7 +54,7 @@ const SignIn = () => {
     dispatch(loginStart());
 
     try {
-      const response = await api.post("/api/v2/auth/login", {
+      const response = await api.post("/v2/auth/login", {
         email: formData.email,
         password: formData.password,
       });

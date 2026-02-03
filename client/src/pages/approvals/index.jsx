@@ -90,7 +90,7 @@ const Approvals = () => {
     try {
       const userId = user?.id || user?._id;
       const response = await api.get(
-        `/api/v2/employees/approvals/my-approvals?approverId=${userId}`,
+        `/v2/employees/approvals/my-approvals?approverId=${userId}`,
       );
 
       const { data } = response;
@@ -141,7 +141,7 @@ const Approvals = () => {
       const userId = user?.id || user?._id;
 
       const response = await api.post(
-        `/api/v2/employees/${approvalDialog.employee.id || approvalDialog.employee._id}/bonus-approval?approverId=${userId}`,
+        `/v2/employees/${approvalDialog.employee.id || approvalDialog.employee._id}/bonus-approval?approverId=${userId}`,
         {
           level: approvalDialog.level,
           action: approvalDialog.action,
@@ -181,7 +181,7 @@ const Approvals = () => {
       const userId = user?.id || user?._id;
 
       const response = await api.post(
-        `/api/v2/employees/approvals/bulk-approve?approverId=${userId}`,
+        `/v2/employees/approvals/bulk-approve?approverId=${userId}`,
         {
           comments: bulkComments,
         },

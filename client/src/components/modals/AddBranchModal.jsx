@@ -71,7 +71,7 @@ const AddBranchModal = ({ open, onClose, onBranchAdded }) => {
         },
       };
 
-      await api.post("/api/v2/branches", payload);
+      await api.post("/v2/branches", payload);
 
       // Reset form
       setFormData({

@@ -24,7 +24,7 @@ const Branches = () => {
     setError("");
 
     try {
-      const response = await api.get("/api/v2/branches");
+      const response = await api.get("/v2/branches");
       const { data } = response;
 
       setBranches(data.data);

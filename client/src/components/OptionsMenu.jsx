@@ -35,7 +35,7 @@ export default function OptionsMenu() {
 
   const handleLogout = async () => {
     try {
-      await api.post("/api/v2/auth/logout");
+      await api.post("/v2/auth/logout");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

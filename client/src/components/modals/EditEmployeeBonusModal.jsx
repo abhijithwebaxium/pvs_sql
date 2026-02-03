@@ -36,7 +36,7 @@ const EditEmployeeBonusModal = ({ open, onClose, onEmployeeUpdated, employee }) 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await api.get("/api/v2/employees");
+        const response = await api.get("/v2/employees");
         setEmployees(response.data.data || []);
 
         // Populate form after employees are loaded
@@ -77,7 +77,7 @@ const EditEmployeeBonusModal = ({ open, onClose, onEmployeeUpdated, employee }) 
         level5Approver: formData.level5Approver || undefined,
       };
 
-      await api.put(`/api/v2/employees/${employee._id}`, payload);
+      await api.put(`/v2/employees/${employee._id}`, payload);
 
       // Reset form
       setFormData({

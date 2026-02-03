@@ -20,7 +20,7 @@ import { PORT, NODE_ENV } from "./src/utils/constants.js";
     const { default: app } = await import("./src/app.js");
 
     // Start server
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`
     ========================================
     Server is running in ${NODE_ENV} mode

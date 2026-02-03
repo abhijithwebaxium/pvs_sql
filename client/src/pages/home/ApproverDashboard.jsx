@@ -29,7 +29,7 @@ const ApproverDashboard = ({ user }) => {
     try {
       const userId = user?.id || user?._id;
       const response = await api.get(
-        `/api/v2/employees/approvals/my-approvals?approverId=${userId}`,
+        `/v2/employees/approvals/my-approvals?approverId=${userId}`,
       );
 
       const { data } = response;

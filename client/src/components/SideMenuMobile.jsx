@@ -43,7 +43,7 @@ function SideMenuMobile({ open, toggleDrawer }) {
 
   const handleLogout = async () => {
     try {
-      await api.post("/api/v2/auth/logout");
+      await api.post("/v2/auth/logout");
 
       // Clear local storage
       localStorage.removeItem("token");

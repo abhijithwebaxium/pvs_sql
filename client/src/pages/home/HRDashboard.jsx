@@ -50,7 +50,7 @@ const HRDashboard = ({ user }) => {
       setLoading(true);
       setError("");
       try {
-        const response = await api.get("/api/v2/employees");
+        const response = await api.get("/v2/employees");
         setEmployees(response.data.data);
         setFilteredEmployees(response.data.data);
       } catch (err) {
@@ -126,7 +126,7 @@ const HRDashboard = ({ user }) => {
       setLoading(true);
       setError("");
       try {
-        const response = await api.get("/api/v2/employees");
+        const response = await api.get("/v2/employees");
         setEmployees(response.data.data);
         setFilteredEmployees(response.data.data);
       } catch (err) {

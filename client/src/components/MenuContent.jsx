@@ -83,7 +83,7 @@ export default function MenuContent() {
         if (!["admin", "manager", "approver"].includes(user.role)) return;
 
         const response = await api.get(
-          `/api/v2/employees/supervisor/my-team?supervisorId=${userId}`
+          `/v2/employees/supervisor/my-team?supervisorId=${userId}`
         );
 
         const employees = response.data.data;

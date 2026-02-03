@@ -58,7 +58,7 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get("/api/v2/employees");
+        const response = await api.get("/v2/employees");
         setEmployees(response.data.data || []);
       } catch (err) {
         console.error("Error fetching employees:", err);
@@ -169,7 +169,7 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
         },
       };
 
-      await api.put(`/api/v2/employees/${employee._id}`, payload);
+      await api.put(`/v2/employees/${employee._id}`, payload);
 
       // Reset form
       setFormData({

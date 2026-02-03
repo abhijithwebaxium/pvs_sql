@@ -400,7 +400,7 @@ const UploadEmployeesModal = ({ open, onClose, onEmployeesUploaded }) => {
       setUploadProgress(50);
 
       // Send data to API
-      const response = await api.post("/api/v2/employees/bulk", {
+      const response = await api.post("/v2/employees/bulk", {
         employees: uniqueEmployees,
       });
 
@@ -486,7 +486,7 @@ const UploadEmployeesModal = ({ open, onClose, onEmployeesUploaded }) => {
 
   const handleDownloadTemplate = async () => {
     try {
-      const response = await api.get("/api/v2/employees/template/download", {
+      const response = await api.get("/v2/employees/template/download", {
         responseType: "blob",
       });
 

@@ -68,7 +68,7 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      await api.post("/api/v2/auth/signup", {
+      await api.post("/v2/auth/signup", {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,

@@ -44,7 +44,7 @@ const Employees = () => {
     setError("");
 
     try {
-      const response = await api.get("/api/v2/employees");
+      const response = await api.get("/v2/employees");
       const { data } = response;
 
       setEmployees(data.data);

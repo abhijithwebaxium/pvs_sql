@@ -45,7 +45,7 @@ const Bonuses = () => {
     try {
       const userId = user?.id || user?._id;
       const response = await api.get(
-        `/api/v2/employees/supervisor/my-team?supervisorId=${userId}`,
+        `/v2/employees/supervisor/my-team?supervisorId=${userId}`,
       );
 
       setEmployees(response.data.data);
@@ -95,7 +95,7 @@ const Bonuses = () => {
       const userId = user?.id || user?._id;
 
       await api.put(
-        `/api/v2/employees/${bonusDialog.employee.id}/bonus?supervisorId=${userId}`,
+        `/v2/employees/${bonusDialog.employee.id}/bonus?supervisorId=${userId}`,
         {
           bonus2025: parseFloat(bonusAmount),
         },
@@ -125,7 +125,7 @@ const Bonuses = () => {
       const userId = user?.id || user?._id;
 
       const response = await api.post(
-        `/api/v2/employees/supervisor/submit-for-approval?supervisorId=${userId}`,
+        `/v2/employees/supervisor/submit-for-approval?supervisorId=${userId}`,
       );
 
       setSuccess(response.data.message);
