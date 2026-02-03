@@ -126,10 +126,15 @@ const HRDashboard = ({ user }) => {
       setLoading(true);
       setError("");
       try {
+        console.log('going to fetch employees');
+
         const response = await api.get("/v2/employees");
+        console.log('employees fetched');
         setEmployees(response.data.data);
         setFilteredEmployees(response.data.data);
       } catch (err) {
+        console.log(err, 'error occurred while fetching employees');
+
         setError(
           err.response?.data?.message ||
             err.message ||
