@@ -469,7 +469,7 @@ const HRDashboard = ({ user }) => {
     return (
       <Box sx={{ mb: 4 }}>
         <Alert severity="error">
-          Failed to load dashboard data: {statsError || error}
+          Failed to load dashboard data hello: {statsError || error}
         </Alert>
       </Box>
     );
