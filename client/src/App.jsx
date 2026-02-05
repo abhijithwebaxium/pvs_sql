@@ -13,7 +13,8 @@ import Employees from "./pages/employees";
 import Approvals from "./pages/approvals";
 import Bonuses from "./pages/bonuses";
 import store from "./store";
-import { loadUserFromStorage } from "./store/slices/userSlice";
+import { loadUserFromStorage, loginSuccess, logout } from "./store/slices/userSlice";
+import api from "./utils/api";
 
 import {
   chartsCustomizations,
@@ -31,6 +32,28 @@ function AppInitializer({ children }) {
   useEffect(() => {
     // Load user from localStorage on app start
     store.dispatch(loadUserFromStorage());
+
+    // Fetch fresh user data from backend if token exists
+    const token = localStorage.getItem('token');
+    if (token) {
+      api.get('/v2/auth/me')
+        .then((response) => {
+          if (response.data.success && response.data.data) {
+            // Update user data with fresh data from backend
+            store.dispatch(loginSuccess({
+              ...response.data.data,
+              token: token
+            }));
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to fetch user data:', error);
+          // If token is invalid, logout
+          if (error.response?.status === 401) {
+            store.dispatch(logout());
+          }
+        });
+    }
   }, []);
 
   return children;

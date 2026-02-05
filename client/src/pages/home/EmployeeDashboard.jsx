@@ -19,7 +19,7 @@ const EmployeeDashboard = ({ user }) => {
                 <strong>Employee ID:</strong> {user?.employeeId || "N/A"}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                <strong>Position:</strong> {user?.position || "N/A"}
+                <strong>Position:</strong> {user?.jobTitle || user?.position || "N/A"}
               </Typography>
               <Typography variant="body1">
                 <strong>Email:</strong> {user?.email || "N/A"}
@@ -41,8 +41,8 @@ const EmployeeDashboard = ({ user }) => {
               <Typography variant="body1" gutterBottom>
                 <strong>Status:</strong>{" "}
                 <Chip
-                  label={user?.isActive ? "Active" : "Inactive"}
-                  color={user?.isActive ? "success" : "error"}
+                  label={user?.isActive !== undefined ? (user.isActive ? "Active" : "Inactive") : "N/A"}
+                  color={user?.isActive !== undefined ? (user.isActive ? "success" : "error") : "default"}
                   size="small"
                 />
               </Typography>
