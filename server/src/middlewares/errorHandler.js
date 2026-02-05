@@ -5,10 +5,12 @@ export const errorHandler = (err, req, res, next) => {
   // Use err.statusCode if available (from AppError), otherwise use res.statusCode or default to 500
   const statusCode = err.statusCode || (res.statusCode !== 200 ? res.statusCode : 500);
 
+  // Send user-friendly response without status code in message
   res.status(statusCode).json({
     success: false,
     message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    // Only include stack trace in development
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
   });
 };
 

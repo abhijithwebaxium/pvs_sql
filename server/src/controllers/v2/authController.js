@@ -24,7 +24,7 @@ export const login = async (req, res, next) => {
         const ldapResult = await authenticateLDAP(email, password);
 
         if (!ldapResult.success) {
-          return next(new AppError('LDAP authentication failed', 401));
+          return next(new AppError('Invalid Active Directory credentials. Please check your email and password.', 401));
         }
 
         // Step 2: Check if employee exists in database
@@ -33,7 +33,7 @@ export const login = async (req, res, next) => {
         if (!employee) {
           return next(
             new AppError(
-              'LDAP authentication successful, but user is not registered in the employee portal. Please contact HR to add your account.',
+              'Your Active Directory account is valid, but you are not registered in the employee portal. Please contact HR to add your account.',
               403
             )
           );
@@ -86,7 +86,20 @@ export const login = async (req, res, next) => {
         });
       } catch (ldapError) {
         console.error('LDAP Auth Error:', ldapError);
-        return next(new AppError(ldapError.message || 'LDAP authentication failed', 401));
+        // Check for specific LDAP errors
+        let errorMessage = 'Unable to authenticate with Active Directory. Please try again or contact IT support.';
+
+        if (ldapError.message?.includes('timeout') || ldapError.message?.includes('Connection timeout')) {
+          errorMessage = 'Active Directory login is currently unavailable. Please try using Local Account login or contact IT support.';
+        } else if (ldapError.message?.includes('ECONNREFUSED') || ldapError.message?.includes('ENOTFOUND')) {
+          errorMessage = 'Active Directory server is not reachable. Please try using Local Account login or contact IT support.';
+        } else if (ldapError.message?.includes('Invalid LDAP credentials') || ldapError.message?.includes('Invalid credentials')) {
+          errorMessage = 'Invalid Active Directory credentials. Please check your email and password.';
+        } else if (ldapError.message?.includes('User not found')) {
+          errorMessage = 'User not found in Active Directory. Please check your email address.';
+        }
+
+        return next(new AppError(errorMessage, 401));
       }
     } else {
       // Local Authentication

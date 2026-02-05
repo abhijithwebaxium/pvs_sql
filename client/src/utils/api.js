@@ -29,6 +29,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Extract user-friendly error message from response
+    const errorMessage = error.response?.data?.message || error.message || "An unexpected error occurred";
+
     if (error.response?.status === 401) {
       // Clear Redux state and local storage
       store.dispatch(logout());
@@ -38,6 +41,9 @@ api.interceptors.response.use(
         window.location.href = "/login";
       }
     }
+
+    // Replace error message with user-friendly version
+    error.message = errorMessage;
     return Promise.reject(error);
   },
 );

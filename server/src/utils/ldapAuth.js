@@ -20,8 +20,8 @@ export const authenticateLDAP = async (email, password) => {
 
   const client = new Client({
     url: ldapServer,
-    timeout: 10000,
-    connectTimeout: 10000,
+    timeout: 5000, // Reduced to 5 seconds
+    connectTimeout: 5000,
   });
 
   try {
@@ -86,8 +86,8 @@ export const authenticateLDAP = async (email, password) => {
     console.log('=== Verifying User Password ===');
     const userClient = new Client({
       url: ldapServer,
-      timeout: 10000,
-      connectTimeout: 10000,
+      timeout: 5000, // Reduced to 5 seconds
+      connectTimeout: 5000,
     });
 
     try {
