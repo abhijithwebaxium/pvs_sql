@@ -202,47 +202,47 @@ const Employees = () => {
         return salary > 0 ? `$${salary.toLocaleString()}` : "N/A";
       },
     },
-    {
-      field: "role",
-      headerName: "Role",
-      width: 120,
-      minWidth: 100,
-      flex: 0.6,
-      renderCell: (params) => (
-        <Box
-          sx={{
-            px: 1.5,
-            py: 0.5,
-            borderRadius: 1,
-            color: "primary.dark",
-            fontWeight: "medium",
-            textTransform: "capitalize",
-          }}
-        >
-          {params.value}
-        </Box>
-      ),
-    },
-    {
-      field: "isActive",
-      headerName: "Status",
-      width: 120,
-      minWidth: 100,
-      flex: 0.5,
-      renderCell: (params) => (
-        <Box
-          sx={{
-            px: 2,
-            py: 0.5,
-            borderRadius: 1,
-            color: params.value ? "success.dark" : "error.dark",
-            fontWeight: "medium",
-          }}
-        >
-          {params.value ? "Active" : "Inactive"}
-        </Box>
-      ),
-    },
+    // {
+    //   field: "role",
+    //   headerName: "Role",
+    //   width: 120,
+    //   minWidth: 100,
+    //   flex: 0.6,
+    //   renderCell: (params) => (
+    //     <Box
+    //       sx={{
+    //         px: 1.5,
+    //         py: 0.5,
+    //         borderRadius: 1,
+    //         color: "primary.dark",
+    //         fontWeight: "medium",
+    //         textTransform: "capitalize",
+    //       }}
+    //     >
+    //       {params.value}
+    //     </Box>
+    //   ),
+    // },
+    // {
+    //   field: "isActive",
+    //   headerName: "Status",
+    //   width: 120,
+    //   minWidth: 100,
+    //   flex: 0.5,
+    //   renderCell: (params) => (
+    //     <Box
+    //       sx={{
+    //         px: 2,
+    //         py: 0.5,
+    //         borderRadius: 1,
+    //         color: params.value ? "success.dark" : "error.dark",
+    //         fontWeight: "medium",
+    //       }}
+    //     >
+    //       {params.value ? "Active" : "Inactive"}
+    //     </Box>
+    //   ),
+    // },
     {
       field: "actions",
       headerName: "Actions",

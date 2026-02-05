@@ -14,6 +14,7 @@ import AdminDashboard from "./AdminDashboard";
 import HRDashboard from "./HRDashboard";
 import ApproverDashboard from "./ApproverDashboard";
 import EmployeeDashboard from "./EmployeeDashboard";
+import Approvals from "../approvals";
 
 const Home = () => {
   const user = useSelector(selectUser);
@@ -44,7 +45,7 @@ const Home = () => {
       case "hr":
         return <HRDashboard user={user} />;
       case "approver":
-        return <ApproverDashboard user={user} />;
+        return <Approvals />;
       case "employee":
         return <EmployeeDashboard user={user} />;
       default:

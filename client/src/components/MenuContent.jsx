@@ -22,8 +22,9 @@ import api from "../utils/api";
 
 // Define menu items - NO ROLE RESTRICTIONS
 const menuItems = [
-  { text: "Home", 
-    icon: <HomeRoundedIcon />, 
+  {
+    text: "Home",
+    icon: <HomeRoundedIcon />,
     path: "/",
     roles: ["admin", "hr"],
   },
@@ -83,14 +84,14 @@ export default function MenuContent() {
         if (!["admin", "manager", "approver"].includes(user.role)) return;
 
         const response = await api.get(
-          `/v2/employees/supervisor/my-team?supervisorId=${userId}`
+          `/v2/employees/supervisor/my-team?supervisorId=${userId}`,
         );
 
         const employees = response.data.data;
 
         // Count employees without bonus assigned (enteredBy not set)
         const count = employees.filter(
-          (emp) => !emp.approvalStatus?.enteredBy
+          (emp) => !emp.approvalStatus?.enteredBy,
         ).length;
 
         setPendingBonusCount(count);
@@ -120,24 +121,27 @@ export default function MenuContent() {
               selected={location.pathname === item.path}
               onClick={() => handleNavigation(item.path)}
             >
-              <ListItemIcon>
-                {item.showBadge ? (
-                  <Badge
-                    badgeContent={pendingBonusCount}
-                    color="error"
-                    max={99}
-                  >
-                    {item.icon}
-                  </Badge>
-                ) : (
-                  item.icon
-                )}
-              </ListItemIcon>
+              <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText
                 primary={
-                  item.showBadge
-                    ? `${item.text} (${pendingBonusCount})`
-                    : item.text
+                  item.showBadge ? (
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      alignItems="center"
+                      position={"relative"}
+                    >
+                      {item.text}
+                      <Badge
+                        badgeContent={pendingBonusCount}
+                        color="error"
+                        max={99}
+                        sx={{ position: "absolute", right: 54, top: -2 }}
+                      />
+                    </Stack>
+                  ) : (
+                    item.text
+                  )
                 }
               />
             </ListItemButton>

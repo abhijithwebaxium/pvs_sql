@@ -248,34 +248,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                name="employeeId"
-                label="Employee ID"
-                value={formData.employeeId}
-                onChange={handleChange}
-                disabled={loading}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
-              <TextField
-                fullWidth
-                select
-                name="role"
-                label="Role"
-                value={formData.role}
-                onChange={handleChange}
-                disabled={loading}
-              >
-                <MenuItem value="employee">Employee</MenuItem>
-                <MenuItem value="hr">HR</MenuItem>
-                <MenuItem value="approver">Approver</MenuItem>
-                <MenuItem value="admin">Admin</MenuItem>
-              </TextField>
-            </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 required
                 fullWidth
@@ -286,7 +259,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 required
                 fullWidth
@@ -298,7 +271,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 required
                 fullWidth
@@ -323,7 +296,35 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                required
+                fullWidth
+                name="employeeId"
+                label="Employee ID"
+                value={formData.employeeId}
+                onChange={handleChange}
+                disabled={loading}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                select
+                name="role"
+                label="Role"
+                value={formData.role}
+                onChange={handleChange}
+                disabled={loading}
+              >
+                <MenuItem value="employee">Employee</MenuItem>
+                <MenuItem value="hr">HR</MenuItem>
+                <MenuItem value="approver">Approver</MenuItem>
+                <MenuItem value="admin">Admin</MenuItem>
+              </TextField>
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="ssn"
@@ -333,7 +334,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="company"
@@ -343,7 +344,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="companyCode"
@@ -353,7 +354,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Autocomplete
                 options={employees}
                 getOptionLabel={(option) => option.fullName || ""}
@@ -380,7 +381,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="location"
@@ -390,7 +391,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="jobTitle"
@@ -400,7 +401,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 select
@@ -418,7 +419,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 <MenuItem value="REG - SAL - Non-Exempt">REG - SAL - Non-Exempt</MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 select
@@ -433,7 +434,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 <MenuItem value="Hourly">Hourly</MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="annualSalary"
@@ -444,7 +445,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="hourlyPayRate"
@@ -455,7 +456,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="bonus2024"
@@ -466,7 +467,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="lastHireDate"
@@ -480,7 +481,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 name="state"
@@ -490,7 +491,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Autocomplete
                 options={employees}
                 getOptionLabel={(option) => option.fullName || ""}
@@ -517,7 +518,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Autocomplete
                 options={employees}
                 getOptionLabel={(option) => option.fullName || ""}
@@ -544,7 +545,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Autocomplete
                 options={employees}
                 getOptionLabel={(option) => option.fullName || ""}
@@ -571,7 +572,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Autocomplete
                 options={employees}
                 getOptionLabel={(option) => option.fullName || ""}
@@ -598,7 +599,7 @@ const AddEmployeeModal = ({ open, onClose, onEmployeeAdded }) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6} sx={{width:'250px'}}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Autocomplete
                 options={employees}
                 getOptionLabel={(option) => option.fullName || ""}
