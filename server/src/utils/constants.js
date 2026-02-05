@@ -8,9 +8,11 @@ export const PORT = process.env.PORT || 4000;
 
 // CORS origins
 export const ALLOWED_ORIGINS = [
-  'http://localhost:5173', // Vite default
-  'http://localhost:3000', // React default
-  'http://localhost:4173', // Vite preview
-  'https://app.modkitsonline.com', // Vite preview
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:4173',
+  'https://app.modkitsonline.com',
+  'https://cpsas038:8080',
+  'https://127.0.0.1:8080',
   process.env.CLIENT_URL, // Production frontend URL
 ].filter(Boolean); // Remove undefined values
