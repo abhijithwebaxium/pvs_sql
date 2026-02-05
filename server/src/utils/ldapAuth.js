@@ -8,13 +8,12 @@ import { Client } from 'ldapts';
  */
 export const authenticateLDAP = async (email, password) => {
   // LDAP Configuration from environment variables
-  const ldapServer = process.env.HRPORTAL_DB_SERVER;
-  const baseDN = process.env.HRPORTAL_DB_NAME;
-  const adminUser = process.env.HRPORTAL_DB_USER;
-  const adminPassword = process.env.HRPORTAL_DB_PASS;
+  const ldapServer = process.env.HRPORTAL_LDAP_Server;
+  const baseDN = process.env.HRPORTAL_LDAP_BaseDN;
+  const adminUser = process.env.HRPORTAL_LDAP_User;
+  const adminPassword = process.env.HRPORTAL_LDAP_PW;
 
-
-  console.log(ldapServer, baseDN, adminUser)
+console.log(process.env.HRPORTAL_LDAP_Server, process.env.HRPORTAL_LDAP_BaseDN, process.env.HRPORTAL_LDAP_User)
 
   // Validate environment variables
   if (!ldapServer || !baseDN || !adminUser || !adminPassword) {
@@ -123,9 +122,9 @@ export const authenticateLDAP = async (email, password) => {
  * @returns {Promise<boolean>}
  */
 export const testLDAPConnection = async () => {
-  const ldapServer = process.env.HRPORTAL_DB_SERVER;
-  const adminUser = process.env.HRPORTAL_DB_USER;
-  const adminPassword = process.env.HRPORTAL_DB_PASS;
+  const ldapServer = process.env.HRPORTAL_LDAP_Server;
+  const adminUser = process.env.HRPORTAL_LDAP_User;
+  const adminPassword = process.env.HRPORTAL_LDAP_PW;
 
   if (!ldapServer || !adminUser || !adminPassword) {
     throw new Error('LDAP configuration is missing');
