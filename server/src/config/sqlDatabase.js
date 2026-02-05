@@ -81,11 +81,11 @@ export const connectSQLDB = async () => {
     initModels(seq);
     console.log('✅ SQL Server models initialized');
 
-    // Sync models in development (creates tables if they don't exist)
-    if (process.env.NODE_ENV === 'development') {
-      await seq.sync({ alter: false });
-      console.log('✅ SQL Server tables synchronized');
-    }
+    // Sync models (creates tables if they don't exist)
+    // Using alter: false to avoid modifying existing tables
+    // This will only CREATE missing tables, not modify existing ones
+    await seq.sync({ alter: false });
+    console.log('✅ SQL Server tables synchronized');
   } catch (error) {
     console.error('❌ Unable to connect to SQL Server:', error.message);
     console.error('Full error:', error);

@@ -77,7 +77,7 @@ const EditEmployeeBonusModal = ({ open, onClose, onEmployeeUpdated, employee }) 
         level5Approver: formData.level5Approver || undefined,
       };
 
-      await api.put(`/v2/employees/${employee._id}`, payload);
+      await api.put(`/v2/employees/${employee.id}`, payload);
 
       // Reset form
       setFormData({

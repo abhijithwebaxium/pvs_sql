@@ -84,9 +84,9 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
         jobTitle: employee.jobTitle || "",
         employeeType: employee.employeeType || "",
         salaryType: employee.salaryType || "",
-        annualSalary: employee.annualSalary || "",
-        hourlyPayRate: employee.hourlyPayRate || "",
-        bonus2024: employee.bonus2024 || "",
+        annualSalary: employee.annualSalary !== undefined && employee.annualSalary !== null ? employee.annualSalary : "",
+        hourlyPayRate: employee.hourlyPayRate !== undefined && employee.hourlyPayRate !== null ? employee.hourlyPayRate : "",
+        bonus2024: employee.bonus2024 !== undefined && employee.bonus2024 !== null ? employee.bonus2024 : "",
         lastHireDate: employee.lastHireDate || "",
         state: employee.address?.state || "",
         isActive: employee.isActive !== undefined ? employee.isActive : true,
@@ -145,9 +145,9 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
         jobTitle: formData.jobTitle || null,
         employeeType: formData.employeeType || null,
         salaryType: formData.salaryType || null,
-        annualSalary: formData.annualSalary ? parseFloat(formData.annualSalary) : null,
-        hourlyPayRate: formData.hourlyPayRate ? parseFloat(formData.hourlyPayRate) : null,
-        bonus2024: formData.bonus2024 ? parseFloat(formData.bonus2024) : null,
+        annualSalary: formData.annualSalary ? parseFloat(formData.annualSalary) : 0,
+        hourlyPayRate: formData.hourlyPayRate ? parseFloat(formData.hourlyPayRate) : 0,
+        bonus2024: formData.bonus2024 ? parseFloat(formData.bonus2024) : 0,
         lastHireDate: formData.lastHireDate || null,
         isActive: formData.isActive,
         level1ApproverId: formData.level1Approver || null,
@@ -165,7 +165,7 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
         },
       };
 
-      await api.put(`/v2/employees/${employee._id}`, payload);
+      await api.put(`/v2/employees/${employee.id}`, payload);
 
       // Reset form
       setFormData({
