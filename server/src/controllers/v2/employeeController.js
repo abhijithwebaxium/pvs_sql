@@ -80,32 +80,32 @@ export const getEmployee = async (req, res, next) => {
         {
           model: Employee,
           as: "supervisor",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level1Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level2Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level3Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level4Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level5Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
       ],
     });
@@ -290,27 +290,27 @@ export const getMyApprovals = async (req, res, next) => {
         {
           model: Employee,
           as: "level1Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level2Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level3Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level4Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level5Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
       ],
       order: [["employeeId", "ASC"]],
@@ -455,27 +455,27 @@ export const updateEmployeeBonus = async (req, res, next) => {
         {
           model: Employee,
           as: "level1Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level2Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level3Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level4Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level5Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
       ],
     });
@@ -506,13 +506,12 @@ export const bulkCreateEmployees = async (req, res, next) => {
     const invalidEmployees = [];
     for (let i = 0; i < employees.length; i++) {
       const emp = employees[i];
-      if (!emp.employeeId || !emp.firstName) {
+      if (!emp.employeeId || !emp.fullName) {
         invalidEmployees.push({
           index: i + 1,
           employeeId: emp.employeeId || "N/A",
-          employeeName:
-            `${emp.firstName || ""} ${emp.lastName || ""}`.trim() || "N/A",
-          reason: "Missing required fields (Employee Number, First Name)",
+          employeeName: emp.fullName || "N/A",
+          reason: "Missing required fields (Employee Number, Full Name)",
         });
       }
     }
@@ -592,7 +591,7 @@ export const bulkCreateEmployees = async (req, res, next) => {
 
         skippedDuplicates.push({
           employeeId: emp.employeeId,
-          employeeName: `${emp.firstName} ${emp.lastName}`.trim(),
+          employeeName: emp.fullName || "N/A",
           email: emp.email || "N/A",
           reason: reason,
         });
@@ -609,10 +608,16 @@ export const bulkCreateEmployees = async (req, res, next) => {
 
     for (const emp of allEmployees) {
       employeeIdMap.set(emp.employeeId, emp);
-      const fullName = `${emp.lastName}, ${emp.firstName}`.toLowerCase();
+      const fullName = emp.fullName.toLowerCase();
       nameMap.set(fullName, emp);
-      const reverseName = `${emp.firstName} ${emp.lastName}`.toLowerCase();
-      nameMap.set(reverseName, emp);
+      // Also try "LastName, FirstName" and "FirstName LastName" variants
+      const nameParts = emp.fullName.split(' ');
+      if (nameParts.length >= 2) {
+        const firstName = nameParts.slice(0, -1).join(' ');
+        const lastName = nameParts[nameParts.length - 1];
+        const lastFirst = `${lastName}, ${firstName}`.toLowerCase();
+        nameMap.set(lastFirst, emp);
+      }
     }
 
     // Helper function to find approver
@@ -839,10 +844,16 @@ export const syncApproverIds = async (req, res, next) => {
     // Build lookup maps
     for (const emp of allEmployees) {
       employeeIdMap.set(emp.employeeId, emp);
-      const fullName = `${emp.lastName}, ${emp.firstName}`.toLowerCase();
+      const fullName = emp.fullName.toLowerCase();
       nameMap.set(fullName, emp);
-      const reverseName = `${emp.firstName} ${emp.lastName}`.toLowerCase();
-      nameMap.set(reverseName, emp);
+      // Also try "LastName, FirstName" and "FirstName LastName" variants
+      const nameParts = emp.fullName.split(' ');
+      if (nameParts.length >= 2) {
+        const firstName = nameParts.slice(0, -1).join(' ');
+        const lastName = nameParts[nameParts.length - 1];
+        const lastFirst = `${lastName}, ${firstName}`.toLowerCase();
+        nameMap.set(lastFirst, emp);
+      }
     }
 
     // Helper function to find approver using maps
@@ -918,7 +929,7 @@ export const syncApproverIds = async (req, res, next) => {
           } else {
             errors.push({
               employeeId: employee.employeeId,
-              employeeName: `${employee.firstName} ${employee.lastName}`,
+              employeeName: employee.fullName,
               level: level.nameField
                 .replace("ApproverName", "")
                 .replace("Name", ""),
@@ -1053,7 +1064,7 @@ export const debugApproverAssignments = async (req, res, next) => {
     // Find the approver
     const approver = await Employee.findOne({
       where: { employeeId },
-      attributes: ["id", "employeeId", "firstName", "lastName"],
+      attributes: ["id", "employeeId", "fullName"],
     });
 
     if (!approver) {
@@ -1125,8 +1136,7 @@ export const debugApproverAssignments = async (req, res, next) => {
       },
       attributes: [
         "employeeId",
-        "firstName",
-        "lastName",
+        "fullName",
         "level1ApproverName",
         "level2ApproverName",
         "level3ApproverName",
@@ -1137,27 +1147,27 @@ export const debugApproverAssignments = async (req, res, next) => {
         {
           model: Employee,
           as: "level1Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level2Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level3Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level4Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level5Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
       ],
       limit: 10,
@@ -1173,8 +1183,7 @@ export const debugApproverAssignments = async (req, res, next) => {
       },
       attributes: [
         "employeeId",
-        "firstName",
-        "lastName",
+        "fullName",
         "level1ApproverName",
         "level2ApproverName",
         "level3ApproverName",
@@ -1185,27 +1194,27 @@ export const debugApproverAssignments = async (req, res, next) => {
         {
           model: Employee,
           as: "level1Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level2Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level3Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level4Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
         {
           model: Employee,
           as: "level5Approver",
-          attributes: ["employeeId", "firstName", "lastName"],
+          attributes: ["employeeId", "fullName"],
         },
       ],
       limit: 10,
@@ -1215,7 +1224,7 @@ export const debugApproverAssignments = async (req, res, next) => {
       success: true,
       approver: {
         employeeId: approver.employeeId,
-        name: `${approver.firstName} ${approver.lastName}`,
+        name: approver.fullName,
         id: approver.id,
       },
       counts: {
@@ -1478,32 +1487,32 @@ export const processBonusApproval = async (req, res, next) => {
         {
           model: Employee,
           as: "supervisor",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level1Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level2Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level3Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level4Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
         {
           model: Employee,
           as: "level5Approver",
-          attributes: ["id", "firstName", "lastName", "employeeId"],
+          attributes: ["id", "fullName", "employeeId"],
         },
       ],
     });

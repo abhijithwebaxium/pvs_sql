@@ -91,7 +91,7 @@ const Branches = () => {
       renderCell: (params) => {
         const manager = params.row.manager;
         return manager
-          ? `${manager.firstName} ${manager.lastName} (${manager.employeeId})`
+          ? `${manager.fullName} (${manager.employeeId})`
           : "Not Assigned";
       },
     },

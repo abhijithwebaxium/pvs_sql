@@ -22,8 +22,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
   const [formData, setFormData] = useState({
     employeeId: "",
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     role: "employee",
     ssn: "",
@@ -75,8 +74,7 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
     if (employee && open) {
       setFormData({
         employeeId: employee.employeeId || "",
-        firstName: employee.firstName || "",
-        lastName: employee.lastName || "",
+        fullName: employee.fullName || "",
         email: employee.email || "",
         role: employee.role || "employee",
         ssn: employee.ssn || "",
@@ -125,11 +123,10 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
     // Validation
     if (
       !formData.employeeId ||
-      !formData.firstName ||
-      !formData.lastName ||
+      !formData.fullName ||
       !formData.email
     ) {
-      setError("Employee ID, Name, and Email are required");
+      setError("Employee ID, Full Name, and Email are required");
       return;
     }
 
@@ -138,32 +135,31 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
     try {
       const payload = {
         employeeId: formData.employeeId,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        fullName: formData.fullName,
         email: formData.email,
         role: formData.role,
-        ssn: formData.ssn || undefined,
-        company: formData.company || undefined,
-        companyCode: formData.companyCode || undefined,
-        location: formData.location || undefined,
-        jobTitle: formData.jobTitle || undefined,
-        employeeType: formData.employeeType || undefined,
-        salaryType: formData.salaryType || undefined,
-        annualSalary: formData.annualSalary ? parseFloat(formData.annualSalary) : undefined,
-        hourlyPayRate: formData.hourlyPayRate ? parseFloat(formData.hourlyPayRate) : undefined,
-        bonus2024: formData.bonus2024 ? parseFloat(formData.bonus2024) : undefined,
-        lastHireDate: formData.lastHireDate || undefined,
+        ssn: formData.ssn || null,
+        company: formData.company || null,
+        companyCode: formData.companyCode || null,
+        location: formData.location || null,
+        jobTitle: formData.jobTitle || null,
+        employeeType: formData.employeeType || null,
+        salaryType: formData.salaryType || null,
+        annualSalary: formData.annualSalary ? parseFloat(formData.annualSalary) : null,
+        hourlyPayRate: formData.hourlyPayRate ? parseFloat(formData.hourlyPayRate) : null,
+        bonus2024: formData.bonus2024 ? parseFloat(formData.bonus2024) : null,
+        lastHireDate: formData.lastHireDate || null,
         isActive: formData.isActive,
-        level1ApproverId: formData.level1Approver || undefined,
-        level1ApproverName: formData.level1ApproverName || undefined,
-        level2ApproverId: formData.level2Approver || undefined,
-        level2ApproverName: formData.level2ApproverName || undefined,
-        level3ApproverId: formData.level3Approver || undefined,
-        level3ApproverName: formData.level3ApproverName || undefined,
-        level4ApproverId: formData.level4Approver || undefined,
-        level4ApproverName: formData.level4ApproverName || undefined,
-        level5ApproverId: formData.level5Approver || undefined,
-        level5ApproverName: formData.level5ApproverName || undefined,
+        level1ApproverId: formData.level1Approver || null,
+        level1ApproverName: formData.level1ApproverName || null,
+        level2ApproverId: formData.level2Approver || null,
+        level2ApproverName: formData.level2ApproverName || null,
+        level3ApproverId: formData.level3Approver || null,
+        level3ApproverName: formData.level3ApproverName || null,
+        level4ApproverId: formData.level4Approver || null,
+        level4ApproverName: formData.level4ApproverName || null,
+        level5ApproverId: formData.level5Approver || null,
+        level5ApproverName: formData.level5ApproverName || null,
         address: {
           state: formData.state || "",
         },
@@ -174,8 +170,7 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
       // Reset form
       setFormData({
         employeeId: "",
-        firstName: "",
-        lastName: "",
+        fullName: "",
         email: "",
         role: "employee",
         ssn: "",
@@ -219,8 +214,7 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
     if (!loading) {
       setFormData({
         employeeId: "",
-        firstName: "",
-        lastName: "",
+        fullName: "",
         email: "",
         role: "employee",
         ssn: "",
@@ -273,24 +267,13 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={8}>
               <TextField
                 required
                 fullWidth
-                name="firstName"
-                label="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                disabled={loading}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                required
-                fullWidth
-                name="lastName"
-                label="Last Name"
-                value={formData.lastName}
+                name="fullName"
+                label="Full Name"
+                value={formData.fullName}
                 onChange={handleChange}
                 disabled={loading}
               />
@@ -484,17 +467,13 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
             <Grid item xs={12} sm={4} width={'250px'}>
               <Autocomplete
                 options={employees}
-                getOptionLabel={(option) =>
-                  option.firstName && option.lastName
-                    ? `${option.firstName} ${option.lastName}`
-                    : ""
-                }
+                getOptionLabel={(option) => option.fullName || ""}
                 value={employees.find(app => app.id === formData.level1Approver) || null}
                 onChange={(event, newValue) => {
                   setFormData((prev) => ({
                     ...prev,
                     level1Approver: newValue?.id || "",
-                    level1ApproverName: newValue ? `${newValue.firstName} ${newValue.lastName}` : "",
+                    level1ApproverName: newValue ? newValue.fullName : "",
                   }));
                 }}
                 disabled={loading}
@@ -517,17 +496,13 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
             <Grid item xs={12} sm={4} width={'250px'}>
               <Autocomplete
                 options={employees}
-                getOptionLabel={(option) =>
-                  option.firstName && option.lastName
-                    ? `${option.firstName} ${option.lastName}`
-                    : ""
-                }
+                getOptionLabel={(option) => option.fullName || ""}
                 value={employees.find(app => app.id === formData.level2Approver) || null}
                 onChange={(event, newValue) => {
                   setFormData((prev) => ({
                     ...prev,
                     level2Approver: newValue?.id || "",
-                    level2ApproverName: newValue ? `${newValue.firstName} ${newValue.lastName}` : "",
+                    level2ApproverName: newValue ? newValue.fullName : "",
                   }));
                 }}
                 disabled={loading}
@@ -550,17 +525,13 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
             <Grid item xs={12} sm={4} width={'250px'}>
               <Autocomplete
                 options={employees}
-                getOptionLabel={(option) =>
-                  option.firstName && option.lastName
-                    ? `${option.firstName} ${option.lastName}`
-                    : ""
-                }
+                getOptionLabel={(option) => option.fullName || ""}
                 value={employees.find(app => app.id === formData.level3Approver) || null}
                 onChange={(event, newValue) => {
                   setFormData((prev) => ({
                     ...prev,
                     level3Approver: newValue?.id || "",
-                    level3ApproverName: newValue ? `${newValue.firstName} ${newValue.lastName}` : "",
+                    level3ApproverName: newValue ? newValue.fullName : "",
                   }));
                 }}
                 disabled={loading}
@@ -583,17 +554,13 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
             <Grid item xs={12} sm={4} width={'250px'}>
               <Autocomplete
                 options={employees}
-                getOptionLabel={(option) =>
-                  option.firstName && option.lastName
-                    ? `${option.firstName} ${option.lastName}`
-                    : ""
-                }
+                getOptionLabel={(option) => option.fullName || ""}
                 value={employees.find(app => app.id === formData.level4Approver) || null}
                 onChange={(event, newValue) => {
                   setFormData((prev) => ({
                     ...prev,
                     level4Approver: newValue?.id || "",
-                    level4ApproverName: newValue ? `${newValue.firstName} ${newValue.lastName}` : "",
+                    level4ApproverName: newValue ? newValue.fullName : "",
                   }));
                 }}
                 disabled={loading}
@@ -616,17 +583,13 @@ const EditEmployeeModal = ({ open, onClose, onEmployeeUpdated, employee }) => {
             <Grid item xs={12} sm={4} width={'250px'}>
               <Autocomplete
                 options={employees}
-                getOptionLabel={(option) =>
-                  option.firstName && option.lastName
-                    ? `${option.firstName} ${option.lastName}`
-                    : ""
-                }
+                getOptionLabel={(option) => option.fullName || ""}
                 value={employees.find(app => app.id === formData.level5Approver) || null}
                 onChange={(event, newValue) => {
                   setFormData((prev) => ({
                     ...prev,
                     level5Approver: newValue?.id || "",
-                    level5ApproverName: newValue ? `${newValue.firstName} ${newValue.lastName}` : "",
+                    level5ApproverName: newValue ? newValue.fullName : "",
                   }));
                 }}
                 disabled={loading}

@@ -40,14 +40,19 @@ export default function SideMenu() {
   const currentLogo = resolvedMode === 'dark' ? logo : logoBlack;
 
   // Get user initials for avatar
-  const getInitials = (firstName, lastName) => {
-    if (!firstName && !lastName) return "U";
-    return `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
+  const getInitials = (fullName) => {
+    if (!fullName) return "U";
+    const nameParts = fullName.trim().split(' ');
+    if (nameParts.length === 1) return nameParts[0].substring(0, 2).toUpperCase();
+    return `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase();
   };
 
-  const displayName = user
-    ? `${user.firstName || ""} ${user.lastName || ""}`.trim() || "User"
-    : "User";
+  // Backward compatibility for user display
+  const displayName = user?.fullName
+    || (user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : null)
+    || user?.firstName
+    || user?.name
+    || "User";
   const displayEmail = user?.email || "user@email.com";
 
   return (
@@ -107,7 +112,7 @@ export default function SideMenu() {
           alt={displayName}
           sx={{ width: 36, height: 36, bgcolor: "primary.main" }}
         >
-          {getInitials(user?.firstName, user?.lastName)}
+          {getInitials(user?.fullName || `${user?.firstName || ""} ${user?.lastName || ""}`.trim())}
         </Avatar>
         <Box sx={{ mr: "auto", minWidth: 0 }}>
           <Typography

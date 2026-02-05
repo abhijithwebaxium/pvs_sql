@@ -354,8 +354,8 @@ const Approvals = () => {
   };
 
   const getApproverInfo = (approver) => {
-    if (!approver || !approver.firstName) return null;
-    return `${approver.firstName} ${approver.lastName || ""} (${approver.employeeId || "N/A"})`;
+    if (!approver || !approver.fullName) return null;
+    return `${approver.fullName} (${approver.employeeId || "N/A"})`;
   };
 
   // Base columns that are common across all levels
@@ -372,12 +372,10 @@ const Approvals = () => {
       },
     },
     {
-      field: "name",
+      field: "fullName",
       headerName: "Name",
       minWidth: 200,
       flex: 1,
-      valueGetter: (params, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`.trim(),
     },
     {
       field: "jobTitle",
@@ -541,7 +539,7 @@ const Approvals = () => {
           for (let i = 1; i <= 5; i++) {
             const approver = emp[`level${i}Approver`];
             approverNames[`level${i}ApproverName`] = approver
-              ? `${approver.firstName} ${approver.lastName}`
+              ? approver.fullName
               : "N/A";
           }
 
@@ -574,7 +572,7 @@ const Approvals = () => {
       for (let i = 1; i <= 5; i++) {
         const approver = emp[`level${i}Approver`];
         approverNames[`level${i}ApproverName`] = approver
-          ? `${approver.firstName} ${approver.lastName}`
+          ? approver.fullName
           : "N/A";
       }
 
@@ -688,13 +686,13 @@ const Approvals = () => {
             };
 
             const approverName =
-              approver && approver.firstName
-                ? `${approver.firstName} ${approver.lastName || ""}`
+              approver && approver.fullName
+                ? approver.fullName
                 : params.row[`level${i}ApproverName`] && params.row[`level${i}ApproverName`] !== "N/A"
                   ? params.row[`level${i}ApproverName`]
                   : `No ${getOrdinalText(i)} approver`;
             const comments = params.row.approvalStatus?.[`level${i}`]?.comments || null;
-            const hasApprover = approver && approver.firstName;
+            const hasApprover = approver && approver.fullName;
             history.push({
               level: i,
               status,
@@ -938,10 +936,8 @@ const Approvals = () => {
       const query = searchQuery.toLowerCase();
       searchMatch =
         row.employeeId?.toLowerCase().includes(query) ||
-        row.firstName?.toLowerCase().includes(query) ||
-        row.lastName?.toLowerCase().includes(query) ||
-        row.email?.toLowerCase().includes(query) ||
-        `${row.firstName} ${row.lastName}`.toLowerCase().includes(query);
+        row.fullName?.toLowerCase().includes(query) ||
+        row.email?.toLowerCase().includes(query);
     }
 
     // Role Filter
@@ -1412,8 +1408,7 @@ const Approvals = () => {
             <>
               <Box sx={{ mb: 2 }}>
                 <Typography variant="body2" color="text.secondary">
-                  <strong>Employee:</strong> {approvalDialog.employee.firstName}{" "}
-                  {approvalDialog.employee.lastName} (
+                  <strong>Employee:</strong> {approvalDialog.employee.fullName} (
                   {approvalDialog.employee.employeeId})
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -1493,8 +1488,7 @@ const Approvals = () => {
                             color="text.secondary"
                             sx={{ mb: 0.5 }}
                           >
-                            <strong>Approver:</strong> {approver.firstName}{" "}
-                            {approver.lastName} ({approver.employeeId})
+                            <strong>Approver:</strong> {approver.fullName} ({approver.employeeId})
                           </Typography>
                         )}
                         {approvedAt && (

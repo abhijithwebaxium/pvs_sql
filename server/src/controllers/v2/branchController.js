@@ -19,7 +19,7 @@ export const getBranches = async (req, res, next) => {
     const branches = await Branch.findAll({
       where,
       include: [
-        { model: Employee, as: 'manager', attributes: ['id', 'firstName', 'lastName', 'employeeId'] },
+        { model: Employee, as: 'manager', attributes: ['id', 'fullName', 'employeeId'] },
       ],
       order: [['branchCode', 'ASC']],
     });
@@ -46,7 +46,7 @@ export const getBranch = async (req, res, next) => {
         {
           model: Employee,
           as: 'manager',
-          attributes: ['id', 'firstName', 'lastName', 'employeeId', 'email', 'phone']
+          attributes: ['id', 'fullName', 'employeeId', 'email', 'phone']
         },
       ],
     });
@@ -136,7 +136,7 @@ export const updateBranch = async (req, res, next) => {
 
     const branch = await Branch.findByPk(req.params.id, {
       include: [
-        { model: Employee, as: 'manager', attributes: ['id', 'firstName', 'lastName', 'employeeId'] },
+        { model: Employee, as: 'manager', attributes: ['id', 'fullName', 'employeeId'] },
       ],
     });
 

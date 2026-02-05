@@ -77,10 +77,8 @@ const HRDashboard = ({ user }) => {
       filtered = filtered.filter(
         (emp) =>
           emp.employeeId?.toLowerCase().includes(query) ||
-          emp.firstName?.toLowerCase().includes(query) ||
-          emp.lastName?.toLowerCase().includes(query) ||
-          emp.email?.toLowerCase().includes(query) ||
-          `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(query),
+          emp.fullName?.toLowerCase().includes(query) ||
+          emp.email?.toLowerCase().includes(query),
       );
     }
 
@@ -313,8 +311,6 @@ const HRDashboard = ({ user }) => {
       field: "fullName",
       headerName: "Name",
       width: 220,
-      valueGetter: (params, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
     },
     {
       field: "jobTitle",

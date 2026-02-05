@@ -18,12 +18,8 @@ export const initEmployeeModel = (sequelize) => {
     allowNull: false,
     unique: true,
   },
-  firstName: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
-  },
-  lastName: {
-    type: DataTypes.STRING(100),
+  fullName: {
+    type: DataTypes.STRING(200),
     allowNull: false,
   },
   email: {

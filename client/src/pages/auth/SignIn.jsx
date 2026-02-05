@@ -9,6 +9,9 @@ import {
   IconButton,
   Paper,
   Divider,
+  ToggleButton,
+  ToggleButtonGroup,
+  Chip,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +35,7 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [authMethod, setAuthMethod] = useState("local"); // 'local' or 'ldap'
 
   const handleChange = (e) => {
     setFormData({
@@ -57,6 +61,7 @@ const SignIn = () => {
       const response = await api.post("/v2/auth/login", {
         email: formData.email,
         password: formData.password,
+        authMethod: authMethod,
       });
 
       const { data: responseData } = response;
@@ -189,6 +194,72 @@ const SignIn = () => {
             </Alert>
           )}
 
+          {/* Authentication Method Toggle */}
+          <Box sx={{ mb: 3, display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+              Select Authentication Method
+            </Typography>
+            <ToggleButtonGroup
+              value={authMethod}
+              exclusive
+              onChange={(e, newMethod) => {
+                if (newMethod !== null) {
+                  setAuthMethod(newMethod);
+                  setError("");
+                }
+              }}
+              aria-label="authentication method"
+              sx={{ mb: 1 }}
+            >
+              <ToggleButton
+                value="local"
+                aria-label="local authentication"
+                sx={{
+                  px: 3,
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  "&.Mui-selected": {
+                    bgcolor: "primary.main",
+                    color: "white",
+                    "&:hover": {
+                      bgcolor: "primary.dark",
+                    },
+                  },
+                }}
+              >
+                Local Account
+              </ToggleButton>
+              <ToggleButton
+                value="ldap"
+                aria-label="ldap authentication"
+                sx={{
+                  px: 3,
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  "&.Mui-selected": {
+                    bgcolor: "primary.main",
+                    color: "white",
+                    "&:hover": {
+                      bgcolor: "primary.dark",
+                    },
+                  },
+                }}
+              >
+                LDAP / Active Directory
+              </ToggleButton>
+            </ToggleButtonGroup>
+            {authMethod === "ldap" && (
+              <Chip
+                label="Using company Active Directory credentials"
+                size="small"
+                color="info"
+                sx={{ mt: 1 }}
+              />
+            )}
+          </Box>
+
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
@@ -269,30 +340,6 @@ const SignIn = () => {
             </Button>
           </Box>
 
-          <Divider sx={{ my: 4 }}>
-            <Typography variant="body2" color="text.secondary">
-              OR
-            </Typography>
-          </Divider>
-
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="body2" color="text.secondary">
-              Don't have an account?{" "}
-              <Typography
-                component="span"
-                variant="body2"
-                onClick={() => navigate("/signup")}
-                sx={{
-                  color: "primary.main",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                  "&:hover": { textDecoration: "underline" },
-                }}
-              >
-                Create Account
-              </Typography>
-            </Typography>
-          </Box>
         </Paper>
 
         <Box sx={{ mt: "auto", pt: 4 }}>

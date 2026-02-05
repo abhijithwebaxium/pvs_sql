@@ -6,8 +6,8 @@ import employeeRoutes from './employeeRoutes.js';
 const router = Router();
 
 // V2 API Routes (SQL Server)
-router.use('/api/v2/auth', authRoutes);
-router.use('/api/v2/branches', branchRoutes);
-router.use('/api/v2/employees', employeeRoutes);
+router.use('/v2/auth', authRoutes);
+router.use('/v2/branches', branchRoutes);
+router.use('/v2/employees', employeeRoutes);
 
 export default router;

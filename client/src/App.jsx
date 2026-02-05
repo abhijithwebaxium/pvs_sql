@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SignIn from "./pages/auth/SignIn";
-import SignUp from "./pages/auth/SignUp";
 import Unauthorized from "./pages/auth/Unauthorized";
 import RootLayout from "./layout/RootLayout";
 import Home from "./pages/home";
@@ -47,7 +46,6 @@ function App(props) {
             <Routes>
               <Route element={<PublicRoute />}>
                 <Route path="/login" element={<SignIn />} />
-                <Route path="/signup" element={<SignUp />} />
               </Route>
 
               {/* Unauthorized route - accessible to authenticated users */}
