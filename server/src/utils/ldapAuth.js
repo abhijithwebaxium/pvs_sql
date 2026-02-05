@@ -13,8 +13,6 @@ export const authenticateLDAP = async (email, password) => {
   const adminUser = process.env.HRPORTAL_LDAP_User;
   const adminPassword = process.env.HRPORTAL_LDAP_PW;
 
-console.log(process.env.HRPORTAL_LDAP_Server, process.env.HRPORTAL_LDAP_BaseDN, process.env.HRPORTAL_LDAP_User)
-
   // Validate environment variables
   if (!ldapServer || !baseDN || !adminUser || !adminPassword) {
     throw new Error('LDAP configuration is missing in environment variables');
