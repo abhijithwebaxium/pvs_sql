@@ -20,6 +20,8 @@ import {
   processBonusApproval,
   submitBonusesForApproval,
   bulkApproveAll,
+  checkAllApprovalsCompleted,
+  exportToUKG,
 } from "../controllers/employeeController.js";
 import { protect, authorize } from "../middlewares/auth.js";
 import path from "path";
@@ -143,5 +145,9 @@ router.patch(
 
 // Bonus update route - HR and Admin only
 router.put("/:id/bonus", authorize(["hr", "admin", "approver"]), updateEmployeeBonus);
+
+// UKG Export routes - HR and Admin only
+router.get("/ukg/approvals-status", authorize(["hr", "admin"]), checkAllApprovalsCompleted);
+router.get("/ukg/export", authorize(["hr", "admin"]), exportToUKG);
 
 export default router;

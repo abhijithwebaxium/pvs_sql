@@ -1798,3 +1798,168 @@ export const bulkApproveAll = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Check if all approvals are completed for all employees with bonuses
+// @route   GET /api/employees/ukg/approvals-status
+// @access  Private (HR/Admin only)
+export const checkAllApprovalsCompleted = async (req, res, next) => {
+  try {
+    // Find all employees who have bonuses entered
+    const employeesWithBonuses = await Employee.find({
+      isActive: true,
+      $or: [
+        { bonus2024: { $ne: null, $exists: true } },
+        { bonus2025: { $ne: null, $exists: true } }
+      ]
+    }).select("employeeId firstName lastName bonus2024 bonus2025 level1Approver level2Approver level3Approver level4Approver level5Approver approvalStatus");
+
+    if (employeesWithBonuses.length === 0) {
+      return res.status(200).json({
+        success: true,
+        allApprovalsCompleted: false,
+        message: "No employees with bonuses found",
+        totalEmployeesWithBonuses: 0,
+        pendingApprovals: 0
+      });
+    }
+
+    // Check each employee's approval status
+    const pendingEmployees = [];
+
+    for (const employee of employeesWithBonuses) {
+      let allLevelsApproved = true;
+
+      // Check each approval level (1-5)
+      for (let level = 1; level <= 5; level++) {
+        const levelKey = `level${level}`;
+        const approverField = `${levelKey}Approver`;
+
+        // If this level has an approver assigned
+        if (employee[approverField]) {
+          const status = employee.approvalStatus?.[levelKey]?.status;
+
+          // If not approved, mark as pending
+          if (status !== "approved") {
+            allLevelsApproved = false;
+            pendingEmployees.push({
+              employeeId: employee.employeeId,
+              name: `${employee.firstName} ${employee.lastName}`,
+              pendingLevel: level,
+              currentStatus: status || "not started"
+            });
+            break; // No need to check further levels
+          }
+        }
+      }
+    }
+
+    const allCompleted = pendingEmployees.length === 0;
+
+    res.status(200).json({
+      success: true,
+      allApprovalsCompleted: allCompleted,
+      totalEmployeesWithBonuses: employeesWithBonuses.length,
+      pendingApprovals: pendingEmployees.length,
+      pendingEmployees: allCompleted ? [] : pendingEmployees,
+      message: allCompleted
+        ? "All approvals completed! Ready for UKG export."
+        : `${pendingEmployees.length} employee(s) still have pending approvals`
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Export employees to UKG Excel format
+// @route   GET /api/employees/ukg/export
+// @access  Private (HR/Admin only)
+export const exportToUKG = async (req, res, next) => {
+  try {
+    const XLSX = await import("xlsx");
+    const path = await import("path");
+    const fs = await import("fs");
+    const { fileURLToPath } = await import("url");
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    // Path to UKG template
+    const templatePath = path.join(__dirname, "../../UKG excel template.xlsx");
+
+    // Check if template exists
+    if (!fs.existsSync(templatePath)) {
+      return next(new AppError("UKG template file not found", 404));
+    }
+
+    // Read the template
+    const templateWorkbook = XLSX.readFile(templatePath);
+    const templateSheetName = templateWorkbook.SheetNames[0];
+
+    // Get all active employees with their data (decrypted automatically by getters)
+    const employees = await Employee.find({ isActive: true })
+      .select("-password")
+      .sort({ employeeId: 1 })
+      .lean({ getters: true }); // Use lean with getters to get decrypted data
+
+    if (employees.length === 0) {
+      return next(new AppError("No employees found to export", 404));
+    }
+
+    // Transform employee data to match UKG template format
+    const ukgData = employees.map((emp) => {
+      return {
+        "Employee Number": emp.employeeId || "",
+        "Employee Name": emp.fullName || `${emp.firstName} ${emp.lastName}`,
+        "SSN": emp.ssn || "",
+        "Company": emp.company || "",
+        "Company Code": emp.companyCode || "",
+        "Supervisor Name": emp.supervisorName || "",
+        "Location": emp.location || "",
+        "1st Reporting": emp.level1ApproverName || "",
+        "2nd Reporting": emp.level2ApproverName || "",
+        "3rd Reporting": emp.level3ApproverName || "",
+        "4th Reporting": emp.level4ApproverName || "",
+        "5th Reporting": emp.level5ApproverName || "",
+        "State/Province": emp.address?.state || "",
+        "Work Email": emp.email || "",
+        "Last Hire Date": emp.lastHireDate ? new Date(emp.lastHireDate) : "",
+        "Employee Type": emp.employeeType || "",
+        "Job Title": emp.jobTitle || "",
+        "Salary or Hourly": emp.salaryType || "",
+        "Annual Salary": emp.annualSalary || 0,
+        "Hourly Pay Rate": emp.hourlyPayRate || 0,
+        "2024 Bonus": emp.bonus2024 || 0,
+        "2025 Bonus": emp.bonus2025 || 0,
+        "Role": emp.role || "employee"
+      };
+    });
+
+    // Create new worksheet from data
+    const newWorksheet = XLSX.utils.json_to_sheet(ukgData);
+
+    // Replace the template sheet with new data
+    templateWorkbook.Sheets[templateSheetName] = newWorksheet;
+
+    // Write to buffer
+    const buffer = XLSX.write(templateWorkbook, {
+      type: "buffer",
+      bookType: "xlsx"
+    });
+
+    // Set headers for file download
+    const filename = `UKG_Export_${new Date().toISOString().split('T')[0]}.xlsx`;
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Content-Length", buffer.length);
+
+    // Send the file
+    res.send(buffer);
+  } catch (error) {
+    console.error("UKG Export Error:", error);
+    next(error);
+  }
+};

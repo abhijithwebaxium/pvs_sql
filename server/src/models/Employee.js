@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { encrypt, decrypt, encryptNumber, decryptNumber } from "../utils/encryption.js";
 
 const { Schema, model } = mongoose;
 
@@ -31,10 +32,19 @@ const EmployeeSchema = new Schema(
       type: String,
       required: true,
     },
+    // Store encrypted SSN in database
     ssn: {
       type: String,
       trim: true,
       sparse: true,
+      set: function(value) {
+        // Encrypt on save
+        return value ? encrypt(value) : null;
+      },
+      get: function(value) {
+        // Decrypt on read
+        return value ? decrypt(value) : null;
+      }
     },
     position: {
       type: String,
@@ -94,21 +104,57 @@ const EmployeeSchema = new Schema(
       type: Number,
       default: 0,
     },
+    // Store encrypted annual salary in database
     annualSalary: {
-      type: Number,
-      default: 0,
+      type: String, // Changed from Number to String to store encrypted data
+      default: null,
+      set: function(value) {
+        // Encrypt on save
+        return value ? encryptNumber(value) : null;
+      },
+      get: function(value) {
+        // Decrypt on read
+        return value ? decryptNumber(value) : 0;
+      }
     },
+    // Store encrypted hourly pay rate in database
     hourlyPayRate: {
-      type: Number,
-      default: 0,
+      type: String, // Changed from Number to String to store encrypted data
+      default: null,
+      set: function(value) {
+        // Encrypt on save
+        return value ? encryptNumber(value) : null;
+      },
+      get: function(value) {
+        // Decrypt on read
+        return value ? decryptNumber(value) : 0;
+      }
     },
+    // Store encrypted 2024 bonus in database
     bonus2024: {
-      type: Number,
-      default: 0,
+      type: String, // Changed from Number to String to store encrypted data
+      default: null,
+      set: function(value) {
+        // Encrypt on save
+        return value ? encryptNumber(value) : null;
+      },
+      get: function(value) {
+        // Decrypt on read
+        return value ? decryptNumber(value) : 0;
+      }
     },
+    // Store encrypted 2025 bonus in database
     bonus2025: {
-      type: Number,
-      default: 0,
+      type: String, // Changed from Number to String to store encrypted data
+      default: null,
+      set: function(value) {
+        // Encrypt on save
+        return value ? encryptNumber(value) : null;
+      },
+      get: function(value) {
+        // Decrypt on read
+        return value ? decryptNumber(value) : 0;
+      }
     },
     phone: {
       type: String,
@@ -300,7 +346,11 @@ const EmployeeSchema = new Schema(
       default: true,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { getters: true }, // Enable getters when converting to JSON
+    toObject: { getters: true } // Enable getters when converting to Object
+  },
 );
 
 EmployeeSchema.pre("validate", function () {

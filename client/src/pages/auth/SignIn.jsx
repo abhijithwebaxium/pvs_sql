@@ -22,7 +22,7 @@ import {
   loginFailure,
 } from "../../store/slices/userSlice";
 import api from "../../utils/api";
-import truckImage from "../../assets/pvs-truck.webp";
+import truckImage from "../../assets/pvs-truck.png";
 import logo from "../../assets/logo_black.png";
 
 const SignIn = () => {

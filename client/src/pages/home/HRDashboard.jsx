@@ -21,6 +21,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import SearchIcon from "@mui/icons-material/Search";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import EditIcon from "@mui/icons-material/Edit";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import useDashboardStats from "../../hooks/useDashboardStats";
 import api from "../../utils/api";
 import EditEmployeeBonusModal from "../../components/modals/EditEmployeeBonusModal";
@@ -45,6 +46,57 @@ const HRDashboard = ({ user }) => {
   const [selectedSupervisor, setSelectedSupervisor] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
 
+  // UKG Export states
+  const [ukgExportEnabled, setUkgExportEnabled] = useState(false);
+  const [ukgExportLoading, setUkgExportLoading] = useState(false);
+
+  const checkUKGExportStatus = async () => {
+    try {
+      const response = await api.get("/v2/employees/ukg/approvals-status");
+      const { data } = response;
+      setUkgExportEnabled(data.allApprovalsCompleted);
+    } catch (err) {
+      console.error("Error checking UKG export status:", err);
+      setUkgExportEnabled(false);
+    }
+  };
+
+  const handleUKGExport = async () => {
+    setUkgExportLoading(true);
+    try {
+      const response = await api.get("/v2/employees/ukg/export", {
+        responseType: "blob",
+      });
+
+      // Create a blob from the response
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a temporary anchor element and trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `UKG_Export_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        "An error occurred while exporting to UKG"
+      );
+    } finally {
+      setUkgExportLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchEmployees = async () => {
       setLoading(true);
@@ -53,6 +105,9 @@ const HRDashboard = ({ user }) => {
         const response = await api.get("/v2/employees");
         setEmployees(response.data.data);
         setFilteredEmployees(response.data.data);
+
+        // Check UKG export status
+        checkUKGExportStatus();
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -772,16 +827,33 @@ const HRDashboard = ({ user }) => {
             }}
           >
             {/* Table Header */}
-            <Box>
-              <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
-                Employees
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                {fullyApprovedCount}/{totalEmployees} employee's approval has been completed
-              </Typography>
-              <Typography variant="caption" sx={{ fontWeight: 500, color: "primary.main", mt: 0.5 }}>
-                Allocated Bonus Aggregate: ${allocatedBonusAggregate.toLocaleString()}
-              </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Box>
+                <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
+                  Employees
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  {fullyApprovedCount}/{totalEmployees} employee's approval has been completed
+                </Typography>
+                <Typography variant="caption" sx={{ fontWeight: 500, color: "primary.main", mt: 0.5 }}>
+                  Allocated Bonus Aggregate: ${allocatedBonusAggregate.toLocaleString()}
+                </Typography>
+              </Box>
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<FileDownloadIcon />}
+                onClick={handleUKGExport}
+                disabled={!ukgExportEnabled || ukgExportLoading}
+                title={
+                  ukgExportEnabled
+                    ? "Download UKG Excel Export"
+                    : "All employee approvals must be completed before exporting"
+                }
+                sx={{ ml: 2 }}
+              >
+                {ukgExportLoading ? "Exporting..." : "Final Excel Export for UKG"}
+              </Button>
             </Box>
 
             {/* Filters Container */}
