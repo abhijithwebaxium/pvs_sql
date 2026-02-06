@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import MenuButton from "./MenuButton";
 import { logout } from "../store/slices/userSlice";
 import api from "../utils/api";
+import Stack from "@mui/material/Stack";
 
 const MenuItem = styled(MuiMenuItem)({
   margin: "2px 0",
@@ -76,12 +77,6 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>Add another account</MenuItem>
-        <MenuItem onClick={handleClose}>Settings</MenuItem>
-        <Divider />
         <MenuItem
           onClick={handleLogout}
           sx={{
@@ -91,10 +86,12 @@ export default function OptionsMenu() {
             },
           }}
         >
-          <ListItemText>Logout</ListItemText>
-          <ListItemIcon>
-            <LogoutRoundedIcon fontSize="small" />
-          </ListItemIcon>
+          <Stack direction="row" alignItems="center" gap={10}>
+            <ListItemText>Logout</ListItemText>
+            <ListItemIcon>
+              <LogoutRoundedIcon fontSize="small" />
+            </ListItemIcon>
+          </Stack>
         </MenuItem>
       </Menu>
     </React.Fragment>
