@@ -15,6 +15,8 @@ import {
   getMyBonusApprovals,
   processBonusApproval,
   bulkApproveAll,
+  checkAllApprovalsCompleted,
+  exportToUKG,
 } from "../../controllers/v2/employeeController.js";
 import { protect } from "../../middlewares/auth.js";
 
@@ -49,5 +51,9 @@ router
 
 router.patch("/:id/toggle-status", toggleEmployeeStatus);
 router.put("/:id/bonus", updateEmployeeBonus);
+
+// UKG Export routes - must be before /:id routes
+router.get("/ukg/approvals-status", checkAllApprovalsCompleted);
+router.get("/ukg/export", exportToUKG);
 
 export default router;

@@ -1610,3 +1610,147 @@ export const bulkApproveAll = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Check if all approvals are completed for UKG export
+// @route   GET /api/v2/employees/ukg/approvals-status
+// @access  Private (HR/Admin only)
+export const checkAllApprovalsCompleted = async (req, res, next) => {
+  try {
+    const Employee = getEmployeeModel();
+
+    // Find all active employees with bonuses
+    const employeesWithBonuses = await Employee.findAll({
+      where: {
+        isActive: true,
+        bonus2025: { [Op.gt]: 0 },
+      },
+    });
+
+    if (employeesWithBonuses.length === 0) {
+      return res.status(200).json({
+        success: true,
+        allApprovalsCompleted: false,
+        message: "No employees with bonuses found. Please add bonuses before exporting.",
+        pendingEmployees: [],
+      });
+    }
+
+    const pendingEmployees = [];
+
+    // Check if ALL employees have ALL their approval levels completed
+    for (const employee of employeesWithBonuses) {
+      const approvalStatus = employee.approvalStatus || {};
+
+      // Check if submitted for approval
+      if (!approvalStatus.submittedForApproval) {
+        pendingEmployees.push({
+          employeeId: employee.employeeId,
+          fullName: employee.fullName,
+          reason: "Not submitted for approval",
+        });
+        continue;
+      }
+
+      // Check each approval level that has an approver
+      for (let level = 1; level <= 5; level++) {
+        const levelKey = `level${level}`;
+        const approverIdField = `${levelKey}ApproverId`;
+
+        // If this level has an approver assigned
+        if (employee[approverIdField]) {
+          const levelStatus = approvalStatus[levelKey]?.status;
+
+          // If this level is not approved, add to pending
+          if (levelStatus !== "approved") {
+            pendingEmployees.push({
+              employeeId: employee.employeeId,
+              fullName: employee.fullName,
+              reason: `Level ${level} approval pending`,
+              pendingLevel: level,
+            });
+            break; // No need to check further levels for this employee
+          }
+        }
+      }
+    }
+
+    const allApprovalsCompleted = pendingEmployees.length === 0;
+
+    res.status(200).json({
+      success: true,
+      allApprovalsCompleted,
+      totalEmployeesWithBonuses: employeesWithBonuses.length,
+      pendingEmployees,
+      message: allApprovalsCompleted
+        ? "All approvals completed. Export is ready."
+        : "Some employees still have pending approvals",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Export all employee data to UKG Excel format
+// @route   GET /api/v2/employees/ukg/export
+// @access  Private (HR/Admin only)
+export const exportToUKG = async (req, res, next) => {
+  try {
+    const XLSX = await import("xlsx");
+    const Employee = getEmployeeModel();
+
+    // Get all active employees
+    const employees = await Employee.findAll({
+      where: { isActive: true },
+      order: [["employeeId", "ASC"]],
+    });
+
+    // Map employees to UKG template format
+    const excelData = employees.map((emp) => ({
+      "Employee Name": emp.fullName || "",
+      "Work Email": emp.email || "",
+      SSN: emp.ssn || "",
+      Company: emp.company || "",
+      "Company Code": emp.companyCode || "",
+      "Supervisor Name": emp.supervisorName || "",
+      Location: emp.location || "",
+      "1st Reporting": emp.level1ApproverName || "",
+      "2nd Reporting": emp.level2ApproverName || "",
+      "3rd Reporting": emp.level3ApproverName || "",
+      "4th Reporting": emp.level4ApproverName || "",
+      "5th Reporting": emp.level5ApproverName || "",
+      "State/Province": emp.addressState || "",
+      "Last Hire Date": emp.lastHireDate || "",
+      "Employee Type": emp.employeeType || "",
+      "Job Title": emp.jobTitle || "",
+      "Salary or Hourly": emp.salaryType || "",
+      "Annual Salary": emp.annualSalary || 0,
+      "Hourly Pay Rate": emp.hourlyPayRate || 0,
+      "2024 Bonus": emp.bonus2024 || 0,
+      "2025 Bonus": emp.bonus2025 || 0,
+    }));
+
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(excelData);
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Employees");
+
+    // Generate buffer
+    const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+
+    // Set headers for file download
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=UKG_Export_${new Date().toISOString().split("T")[0]}.xlsx`,
+    );
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+
+    res.send(buffer);
+  } catch (error) {
+    next(error);
+  }
+};

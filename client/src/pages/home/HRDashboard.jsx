@@ -13,6 +13,7 @@ import {
   InputAdornment,
   LinearProgress,
   Button,
+  Snackbar,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { PieChart } from "@mui/x-charts/PieChart";
@@ -49,6 +50,8 @@ const HRDashboard = ({ user }) => {
   // UKG Export states
   const [ukgExportEnabled, setUkgExportEnabled] = useState(false);
   const [ukgExportLoading, setUkgExportLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const checkUKGExportStatus = async () => {
     try {
@@ -59,6 +62,17 @@ const HRDashboard = ({ user }) => {
       console.error("Error checking UKG export status:", err);
       setUkgExportEnabled(false);
     }
+  };
+
+  const handleUKGExportClick = () => {
+    if (!ukgExportEnabled) {
+      setSnackbarMessage(
+        "This export only works after adding bonuses and approving all levels (Level 1-5) for all employees with bonuses."
+      );
+      setSnackbarOpen(true);
+      return;
+    }
+    handleUKGExport();
   };
 
   const handleUKGExport = async () => {
@@ -86,6 +100,9 @@ const HRDashboard = ({ user }) => {
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
+
+      setSnackbarMessage("UKG export downloaded successfully!");
+      setSnackbarOpen(true);
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -95,6 +112,10 @@ const HRDashboard = ({ user }) => {
     } finally {
       setUkgExportLoading(false);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   useEffect(() => {
@@ -856,6 +877,32 @@ const HRDashboard = ({ user }) => {
         </Grid>
       </Grid>
 
+      {/* UKG Export Button - Outside Table */}
+      <Box sx={{ mb: 3, display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          variant="contained"
+          color="success"
+          size="large"
+          startIcon={<FileDownloadIcon />}
+          onClick={handleUKGExportClick}
+          disabled={ukgExportLoading}
+          sx={{
+            px: 3,
+            py: 1.5,
+            fontWeight: 600,
+            boxShadow: 3,
+            opacity: !ukgExportEnabled && !ukgExportLoading ? 0.6 : 1,
+            backgroundColor: "success.main",
+            "&:hover": {
+              backgroundColor: "success.main",
+              boxShadow: 6,
+            },
+          }}
+        >
+          {ukgExportLoading ? "Exporting..." : "Final Excel Export for UKG"}
+        </Button>
+      </Box>
+
       <Paper
         sx={{
           width: "100%",
@@ -1287,6 +1334,15 @@ const HRDashboard = ({ user }) => {
         onClose={handleCloseEditModal}
         onEmployeeUpdated={handleEmployeeUpdated}
         employee={selectedEmployee}
+      />
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{ mt: 2 }}
       />
     </Box>
   );
