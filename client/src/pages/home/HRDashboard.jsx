@@ -95,7 +95,9 @@ const HRDashboard = ({ user }) => {
 
     // Supervisor filter
     if (selectedSupervisor) {
-      filtered = filtered.filter((emp) => emp.supervisorName === selectedSupervisor);
+      filtered = filtered.filter(
+        (emp) => emp.supervisorName === selectedSupervisor,
+      );
     }
 
     // Company filter
@@ -104,7 +106,14 @@ const HRDashboard = ({ user }) => {
     }
 
     setFilteredEmployees(filtered);
-  }, [searchQuery, selectedRole, selectedStatus, selectedSupervisor, selectedCompany, employees]);
+  }, [
+    searchQuery,
+    selectedRole,
+    selectedStatus,
+    selectedSupervisor,
+    selectedCompany,
+    employees,
+  ]);
 
   const handleEditClick = (employee) => {
     setSelectedEmployee(employee);
@@ -131,7 +140,7 @@ const HRDashboard = ({ user }) => {
         setError(
           err.response?.data?.message ||
             err.message ||
-            "An error occurred while fetching employees"
+            "An error occurred while fetching employees",
         );
       } finally {
         setLoading(false);
@@ -143,15 +152,13 @@ const HRDashboard = ({ user }) => {
   // Extract unique supervisors from all employees
   const uniqueSupervisors = [
     ...new Set(
-      employees.map((emp) => emp.supervisorName).filter((name) => name)
+      employees.map((emp) => emp.supervisorName).filter((name) => name),
     ),
   ].sort();
 
   // Extract unique companies from all employees
   const uniqueCompanies = [
-    ...new Set(
-      employees.map((emp) => emp.company).filter((name) => name)
-    ),
+    ...new Set(employees.map((emp) => emp.company).filter((name) => name)),
   ].sort();
 
   // Calculate allocated bonus aggregate by selected supervisor
@@ -164,15 +171,16 @@ const HRDashboard = ({ user }) => {
   // Calculate supervisor bonus statistics
   const supervisorStats = uniqueSupervisors.map((supervisorName) => {
     const supervisorEmployees = employees.filter(
-      (emp) => emp.supervisorName === supervisorName
+      (emp) => emp.supervisorName === supervisorName,
     );
     const totalEmployees = supervisorEmployees.length;
     const employeesWithBonus = supervisorEmployees.filter(
-      (emp) => parseFloat(emp.bonus2025) > 0
+      (emp) => parseFloat(emp.bonus2025) > 0,
     ).length;
-    const percentage = totalEmployees > 0
-      ? ((employeesWithBonus / totalEmployees) * 100).toFixed(1)
-      : 0;
+    const percentage =
+      totalEmployees > 0
+        ? ((employeesWithBonus / totalEmployees) * 100).toFixed(1)
+        : 0;
 
     return {
       id: supervisorName,
@@ -186,7 +194,7 @@ const HRDashboard = ({ user }) => {
   // Calculate donut chart data - Bonus allocation status
   const totalActiveEmployees = employees.filter((emp) => emp.isActive).length;
   const employeesWithBonus2025 = employees.filter(
-    (emp) => emp.isActive && parseFloat(emp.bonus2025) > 0
+    (emp) => emp.isActive && parseFloat(emp.bonus2025) > 0,
   ).length;
   const employeesWithoutBonus = totalActiveEmployees - employeesWithBonus2025;
 
@@ -217,12 +225,24 @@ const HRDashboard = ({ user }) => {
       }
     }
     // Employee must have at least one approver assigned
-    return emp.level1Approver || emp.level2Approver || emp.level3Approver || emp.level4Approver || emp.level5Approver;
+    return (
+      emp.level1Approver ||
+      emp.level2Approver ||
+      emp.level3Approver ||
+      emp.level4Approver ||
+      emp.level5Approver
+    );
   }).length;
 
   // Calculate total bonus aggregates for all employees
-  const totalBonus2024 = employees.reduce((sum, emp) => sum + (parseFloat(emp.bonus2024) || 0), 0);
-  const totalBonus2025 = employees.reduce((sum, emp) => sum + (parseFloat(emp.bonus2025) || 0), 0);
+  const totalBonus2024 = employees.reduce(
+    (sum, emp) => sum + (parseFloat(emp.bonus2024) || 0),
+    0,
+  );
+  const totalBonus2025 = employees.reduce(
+    (sum, emp) => sum + (parseFloat(emp.bonus2025) || 0),
+    0,
+  );
 
   // Supervisor table columns
   const supervisorColumns = [
@@ -262,7 +282,15 @@ const HRDashboard = ({ user }) => {
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
-        <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            mt: 1,
+          }}
+        >
           <Box sx={{ width: "100%", position: "relative" }}>
             <LinearProgress
               variant="determinate"
@@ -273,7 +301,8 @@ const HRDashboard = ({ user }) => {
                 backgroundColor: "action.hover",
                 "& .MuiLinearProgress-bar": {
                   borderRadius: 2,
-                  backgroundColor: params.value >= 50 ? "success.main" : "warning.main",
+                  backgroundColor:
+                    params.value >= 50 ? "success.main" : "warning.main",
                 },
               }}
             />
@@ -361,9 +390,7 @@ const HRDashboard = ({ user }) => {
             : status === "rejected"
               ? "error.main"
               : "text.primary";
-        return (
-          <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>
-        );
+        return <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>;
       },
     },
     {
@@ -379,9 +406,7 @@ const HRDashboard = ({ user }) => {
             : status === "rejected"
               ? "error.main"
               : "text.primary";
-        return (
-          <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>
-        );
+        return <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>;
       },
     },
     {
@@ -397,9 +422,7 @@ const HRDashboard = ({ user }) => {
             : status === "rejected"
               ? "error.main"
               : "text.primary";
-        return (
-          <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>
-        );
+        return <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>;
       },
     },
     {
@@ -415,9 +438,7 @@ const HRDashboard = ({ user }) => {
             : status === "rejected"
               ? "error.main"
               : "text.primary";
-        return (
-          <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>
-        );
+        return <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>;
       },
     },
     {
@@ -433,9 +454,7 @@ const HRDashboard = ({ user }) => {
             : status === "rejected"
               ? "error.main"
               : "text.primary";
-        return (
-          <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>
-        );
+        return <Typography sx={{ color, mt: 1 }}>{approverName}</Typography>;
       },
     },
     {
@@ -469,11 +488,12 @@ const HRDashboard = ({ user }) => {
   return (
     <Box sx={{ pb: 4 }}>
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }}>
           <Card
             sx={{
               height: "100%",
-              background: "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
+              background:
+                "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
               borderRadius: 2,
               border: "1px solid",
               borderColor: "primary.light",
@@ -522,7 +542,14 @@ const HRDashboard = ({ user }) => {
                       mb: 0.5,
                     }}
                   >
-                    {statsLoading ? <CircularProgress size={30} sx={{ color: "primary.main" }} /> : staffCount}
+                    {statsLoading ? (
+                      <CircularProgress
+                        size={30}
+                        sx={{ color: "primary.main" }}
+                      />
+                    ) : (
+                      staffCount
+                    )}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -539,11 +566,12 @@ const HRDashboard = ({ user }) => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }}>
           <Card
             sx={{
               height: "100%",
-              background: "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
+              background:
+                "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
               borderRadius: 2,
               border: "1px solid",
               borderColor: "primary.light",
@@ -592,7 +620,14 @@ const HRDashboard = ({ user }) => {
                       mb: 0.5,
                     }}
                   >
-                    {loading ? <CircularProgress size={30} sx={{ color: "primary.main" }} /> : fullyApprovedCount}
+                    {loading ? (
+                      <CircularProgress
+                        size={30}
+                        sx={{ color: "primary.main" }}
+                      />
+                    ) : (
+                      fullyApprovedCount
+                    )}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -609,11 +644,12 @@ const HRDashboard = ({ user }) => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }}>
           <Card
             sx={{
               height: "100%",
-              background: "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
+              background:
+                "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
               borderRadius: 2,
               border: "1px solid",
               borderColor: "primary.light",
@@ -662,7 +698,14 @@ const HRDashboard = ({ user }) => {
                       mb: 0.5,
                     }}
                   >
-                    {loading ? <CircularProgress size={30} sx={{ color: "primary.main" }} /> : `$${totalBonus2024.toLocaleString()}`}
+                    {loading ? (
+                      <CircularProgress
+                        size={30}
+                        sx={{ color: "primary.main" }}
+                      />
+                    ) : (
+                      `$${totalBonus2024.toLocaleString()}`
+                    )}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -679,11 +722,12 @@ const HRDashboard = ({ user }) => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }}>
           <Card
             sx={{
               height: "100%",
-              background: "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
+              background:
+                "linear-gradient(135deg, hsl(210, 100%, 95%) 0%, hsl(210, 100%, 92%) 100%)",
               borderRadius: 2,
               border: "1px solid",
               borderColor: "primary.light",
@@ -732,7 +776,14 @@ const HRDashboard = ({ user }) => {
                       mb: 0.5,
                     }}
                   >
-                    {loading ? <CircularProgress size={30} sx={{ color: "primary.main" }} /> : `$${totalBonus2025.toLocaleString()}`}
+                    {loading ? (
+                      <CircularProgress
+                        size={30}
+                        sx={{ color: "primary.main" }}
+                      />
+                    ) : (
+                      `$${totalBonus2025.toLocaleString()}`
+                    )}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -776,11 +827,20 @@ const HRDashboard = ({ user }) => {
               <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
                 Employees
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                {fullyApprovedCount}/{totalEmployees} employee's approval has been completed
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                {fullyApprovedCount}/{totalEmployees} employee's approval has
+                been completed
               </Typography>
-              <Typography variant="caption" sx={{ fontWeight: 500, color: "primary.main", mt: 0.5 }}>
-                Allocated Bonus Aggregate: ${allocatedBonusAggregate.toLocaleString()}
+              <Typography
+                variant="caption"
+                sx={{ fontWeight: 500, color: "primary.main", mt: 0.5 }}
+              >
+                Allocated Bonus Aggregate: $
+                {allocatedBonusAggregate.toLocaleString()}
               </Typography>
             </Box>
 
@@ -857,7 +917,7 @@ const HRDashboard = ({ user }) => {
                 <MenuItem value="inactive">Inactive</MenuItem>
               </TextField>
 
-             {/* Search Bar */}
+              {/* Search Bar */}
               <TextField
                 size="small"
                 placeholder="Search employees..."
@@ -907,7 +967,14 @@ const HRDashboard = ({ user }) => {
       </Paper>
 
       {/* Supervisor Statistics and Chart Section */}
-      <Box sx={{ display: "flex", gap: 3, alignItems: "stretch" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column !important", xl: "row !important" },
+          gap: 3,
+          alignItems: "stretch",
+        }}
+      >
         {/* Supervisor Bonus Statistics Table */}
         <Paper
           sx={{
@@ -958,7 +1025,17 @@ const HRDashboard = ({ user }) => {
         </Paper>
 
         {/* Charts Column */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3, width: "400px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: {
+              xs: "column !important",
+              md: "row !important",
+              xl: "column !important",
+            },
+            gap: 3,
+          }}
+        >
           {/* Bonus Allocation Donut Chart */}
           <Paper
             sx={{
@@ -971,11 +1048,17 @@ const HRDashboard = ({ user }) => {
               flexDirection: "column",
             }}
           >
-            <Box sx={{ p: 2, borderBottom: "1px solid", borderColor: "divider" }}>
+            <Box
+              sx={{ p: 2, borderBottom: "1px solid", borderColor: "divider" }}
+            >
               <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
                 Bonus Allocation Overview
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Distribution of 2025 bonus allocation
               </Typography>
             </Box>
@@ -1020,10 +1103,17 @@ const HRDashboard = ({ user }) => {
                     textAlign: "center",
                   }}
                 >
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: "primary.main" }}>
+                  <Typography
+                    variant="h4"
+                    sx={{ fontWeight: 700, color: "primary.main" }}
+                  >
                     {totalActiveEmployees > 0
-                      ? ((employeesWithBonus2025 / totalActiveEmployees) * 100).toFixed(1)
-                      : 0}%
+                      ? (
+                          (employeesWithBonus2025 / totalActiveEmployees) *
+                          100
+                        ).toFixed(1)
+                      : 0}
+                    %
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Overall Allocation
@@ -1032,14 +1122,39 @@ const HRDashboard = ({ user }) => {
               </Box>
 
               {/* Custom Legend */}
-              <Box sx={{ display: "flex", gap: 3, mt: 2, justifyContent: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 3,
+                  mt: 2,
+                  justifyContent: "center",
+                }}
+              >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Box sx={{ width: 15, height: 15, borderRadius: "3px", bgcolor: "#4caf50" }} />
-                  <Typography variant="body2">With Bonus ({employeesWithBonus2025})</Typography>
+                  <Box
+                    sx={{
+                      width: 15,
+                      height: 15,
+                      borderRadius: "3px",
+                      bgcolor: "#4caf50",
+                    }}
+                  />
+                  <Typography variant="body2">
+                    With Bonus ({employeesWithBonus2025})
+                  </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Box sx={{ width: 15, height: 15, borderRadius: "3px", bgcolor: "#ff9800" }} />
-                  <Typography variant="body2">Without Bonus ({employeesWithoutBonus})</Typography>
+                  <Box
+                    sx={{
+                      width: 15,
+                      height: 15,
+                      borderRadius: "3px",
+                      bgcolor: "#ff9800",
+                    }}
+                  />
+                  <Typography variant="body2">
+                    Without Bonus ({employeesWithoutBonus})
+                  </Typography>
                 </Box>
               </Box>
             </Box>
@@ -1057,11 +1172,17 @@ const HRDashboard = ({ user }) => {
               flexDirection: "column",
             }}
           >
-            <Box sx={{ p: 2, borderBottom: "1px solid", borderColor: "divider" }}>
+            <Box
+              sx={{ p: 2, borderBottom: "1px solid", borderColor: "divider" }}
+            >
               <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
                 Bonus Comparison
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Total bonus aggregates for 2024 and 2025
               </Typography>
             </Box>

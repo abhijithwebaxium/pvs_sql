@@ -13,7 +13,11 @@ import Employees from "./pages/employees";
 import Approvals from "./pages/approvals";
 import Bonuses from "./pages/bonuses";
 import store from "./store";
-import { loadUserFromStorage, loginSuccess, logout } from "./store/slices/userSlice";
+import {
+  loadUserFromStorage,
+  loginSuccess,
+  logout,
+} from "./store/slices/userSlice";
 import api from "./utils/api";
 
 import {
@@ -34,20 +38,23 @@ function AppInitializer({ children }) {
     store.dispatch(loadUserFromStorage());
 
     // Fetch fresh user data from backend if token exists
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      api.get('/v2/auth/me')
+      api
+        .get("/v2/auth/me")
         .then((response) => {
           if (response.data.success && response.data.data) {
             // Update user data with fresh data from backend
-            store.dispatch(loginSuccess({
-              ...response.data.data,
-              token: token
-            }));
+            store.dispatch(
+              loginSuccess({
+                ...response.data.data,
+                token: token,
+              }),
+            );
           }
         })
         .catch((error) => {
-          console.error('Failed to fetch user data:', error);
+          console.error("Failed to fetch user data:", error);
           // If token is invalid, logout
           if (error.response?.status === 401) {
             store.dispatch(logout());
@@ -65,7 +72,7 @@ function App(props) {
       <AppTheme {...props} themeComponents={xThemeComponents}>
         <CssBaseline enableColorScheme />
         <AppInitializer>
-          <BrowserRouter>
+          <BrowserRouter basename="/PerformanceRewardsPortal">
             <Routes>
               <Route element={<PublicRoute />}>
                 <Route path="/login" element={<SignIn />} />
